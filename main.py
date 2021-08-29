@@ -48,33 +48,32 @@ def rollup(employee_name, to_rollup, remaining_activities):
             break
 
         # If the next activity is different but only <= 5 min in duration, and followed by the same
-        # activity, also rollup
-        elif (next_next_activity and
+        # activity as current, also rollup.
+        if (next_next_activity and
             next_next_activity['activity_name'] == activity['activity_name'] and
             get_duration_in_secs(next_activity) <= 300):
             rollup(employee_name, to_rollup + [activity, next_activity, next_next_activity], remaining_activities[3:])
             break
 
-        else:
-            if to_rollup:
-                to_rollup += [activity]
-                TO_RETURN.append([
-                        employee_name,
-                        to_rollup[0]['activity_name'],
-                        format_timestamp(to_rollup[0]['start_time']),
-                        format_timestamp(to_rollup[-1]['end_time']),
-                        to_rollup[0]['start_time']
-                    ])
-            else:
-                TO_RETURN.append([
+        if to_rollup:
+            to_rollup += [activity]
+            TO_RETURN.append([
                     employee_name,
-                    activity['activity_name'],
-                    format_timestamp(activity['start_time']),
-                    format_timestamp(activity['end_time']),
-                    activity['start_time'],
+                    to_rollup[0]['activity_name'],
+                    format_timestamp(to_rollup[0]['start_time']),
+                    format_timestamp(to_rollup[-1]['end_time']),
+                    to_rollup[0]['start_time']
                 ])
+        else:
+            TO_RETURN.append([
+                employee_name,
+                activity['activity_name'],
+                format_timestamp(activity['start_time']),
+                format_timestamp(activity['end_time']),
+                activity['start_time'],
+            ])
 
-            to_rollup = []
+        to_rollup = []
 
 def query_with_rollup():
     session = Session()
