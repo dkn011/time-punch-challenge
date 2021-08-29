@@ -42,7 +42,7 @@ def rollup(employee_name, to_rollup, remaining_activities):
         next_activity = {} if idx == max_idx else remaining_activities[idx + 1]
         next_next_activity = {} if idx + 1 >= max_idx else remaining_activities[idx + 2]
 
-        # If the next activity is the add to merge list and recurse
+        # If the next activity is the same, add to merge list and recurse
         if activity['activity_name'] == next_activity.get('activity_name'):
             rollup(employee_name, to_rollup + [activity], remaining_activities[1:])
             break
